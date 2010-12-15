@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<install type="module" version="1.5.0" method="upgrade">
+        <name>Guild News Feed</name> 
+        <author>Brad Cimbura</author> 
+        <creationDate>December 2010</creationDate> 
+        <copyright>All rights reserved Brad Cimbura</copyright> 
+        <license>GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html</license>
+        <authorEmail>admin@soylentcode.com</authorEmail> 
+        <authorUrl>soylentcode.com</authorUrl> 
+        <version>0.1</version> 
+        <description>Guild News Feed</description>
+        <files>
+                <filename module="mod_guildnesfeed">mod_guildnewsfeed.php</filename>
+                <filename>index.html</filename>
+                <filename>helper.php</filename>
+                <filename>tmpl/default.php</filename>
+                <filename>tmpl/index.html</filename>
+        </files>
+        <params>
+           <param name="realm" type="text" default="Whisperwind" label="Realm Name" description="Realm Name" />
+           <param name="region" type="list" default="us" label="Region" description="Country Region">
+             <option value="us">us</option>
+             <option value="eu">eu</option>
+           </param>           
+           <param name="updatetimer" type="text" default="10" label="Update Timer" description="Minutes Between Updates" />           
+		   <param name="displaycount" type="text" default="10" label="Items to Show" description="Items to Show" />
+        </params>
+</install>
