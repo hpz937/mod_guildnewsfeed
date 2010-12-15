@@ -27,7 +27,8 @@ class guildnewsfeed {
     $i=0;
     $data=array();
     while(!feof($fp)) {
-      $data[]=fgets($fp);
+      $data[]=htmlentities(fgets($fp));
+	  $i++;
       if($i>=guildnewsfeed::$itemstodisplay)
         break;
     }
