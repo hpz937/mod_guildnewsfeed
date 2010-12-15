@@ -8,9 +8,9 @@
 **/
 
 print("<ul class=\"guildnewsfeed\">\n");
-foreach($data as $list) {
+foreach($data as $y) {
   print("<li>");
-  $x=explode("|",trim($list));
+  $x=explode("|",trim($y));
   print($x[0] . " " . $x[1]);
   $i++;
   print("</li>\n");

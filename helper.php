@@ -33,6 +33,7 @@ class guildnewsfeed {
     }
     print("</ul>\n");
     fclose($fp);
+	return $data;
   }
 
   private function clean_line($input) {
@@ -82,6 +83,4 @@ class guildnewsfeed {
     fclose($fp);
   }
 }
-
-guildnewsfeed::display();
 ?>
