@@ -17,7 +17,7 @@ class guildnewsfeed {
  //$params->get('displaycount') 
  
  private static $feedurl="http://us.battle.net/wow/en/guild/whisperwind/warped%20welcome/news";
- private static $cachefile="news.txt";
+ private static $cachefile="modules/mod_guildnewsfeed/news.txt";
  private static $updatetime=10;
  private static $itemstodisplay=10;
 
@@ -27,7 +27,7 @@ class guildnewsfeed {
     $i=0;
     $data=array();
     while(!feof($fp)) {
-      $data[]=htmlentities(fgets($fp));
+      $data[]=trim(fgets($fp));
 	  $i++;
       if($i>=guildnewsfeed::$itemstodisplay)
         break;
@@ -37,51 +37,54 @@ class guildnewsfeed {
 	return $data;
   }
 
-  private function clean_line($input) {
-    $input=utf8_decode($input);
-    $input=preg_replace("/<div id=\"news-tooltip[^>]*>/","|",$input);
-    $input=preg_replace("/<dt>/","|",$input);
-    $input=preg_replace ('/<[^>]*>/', '', $input);
-    return $input;
-  }
-
   private function update_news() {
     if(file_exists(guildnewsfeed::$cachefile))
       if(time()-guildnewsfeed::$updatetime*60< filemtime(guildnewsfeed::$cachefile))
 	    return;
     $fp=fopen(guildnewsfeed::$feedurl,"r");
-    $inline=0;
+	$inul=0;
     $inli=0;
-    $lines=0;
-    $iline=array();
+    $line=0;
+    $li=array();
     while(!feof($fp)) {
-      $line=fgets($fp);
-      if(preg_match("/<ul class=\"activity-feed activity-feed-wide\">/",$line))
-        $inline=1;
-      if($inline && preg_match("/<\/ul>/",$line))
-        $inline=0;
-      if($inline) {
-        if(preg_match("/<li[^>]*>/",$line))
+      $input=fgets($fp);
+      if(preg_match("/<ul class=\"activity-feed activity-feed-wide\">/",$input))
+        $inul=1;
+      if($inul && preg_match("/<\/ul>/",$input))
+        $inul=0;
+      if($inul) {
+        if(preg_match("/<li[^>]*>/",$input))
           $inli=1;
-        if($inli && preg_match("/<\/li>/",$line)) {
-          $inli=0;
-          $lines++;
-        }
         if($inli) {
-          $iline[$lines] .= trim(guildnewsfeed::clean_line($line));
-        }
+	      $li[$line] .= trim($input);
+	    }
+	    if($inli && preg_match("/<\/li>/",$input)) {
+          $inli=0;
+	      $line++;
+	    }
       }
     }
     fclose($fp);
     $fp=fopen(guildnewsfeed::$cachefile,"w");
-    foreach($iline as $x) {
-      $y=explode("|",$x);
-      if(isset($y[2]))
-        fwrite($fp,$y[0] . "|" . $y[2] . "\n");
-      else
-        fwrite($fp,$y[0] . "|" . $y[1] . "\n");
+    foreach($li as $x) {
+      fwrite($fp,guildnewsfeed::process($x) . "\n");
     }
     fclose($fp);
   }
+  
+  private function process($input) {
+    preg_match("/<dt>([^<]*)<\/dt>/",$input,$dtmatch);
+    if(preg_match("/player-ach|item-crafted|item-looted/",$input)) {
+      preg_match("/<a href=\"([^\"]*)\"[^>]*>([^<]*)<\/a>([^<]*)<a href=\"([^\"]*)\"[^>]*>([^<]*)<\/a>/",$input,$matches);
+      return "<a href=\"http://us.battle.net/" . $matches[1] . "\">" . htmlentities(utf8_decode($matches[2])) . "</a>" . $matches[3] . "<a href=\"http://us.battle.net/" . $matches[4] . "\">" . $matches[5] . "</a>. " . $dtmatch[1];
+    }
+    elseif(preg_match("/guild-ach/",$input)) {
+      preg_match("/<\/a>([^<]*)<a href=\"([^\"]*)\"[^>]*>([^<]*)<\/a>/",$input,$matches);
+      return $matches[1] . "<a href=\"http://us.battle.net/" . $matches[2] . "\">" . $matches[3] . "</a>. " . $dtmatch[1];
+    }
+    else {
+      return "";
+    }
+}
 }
 ?>

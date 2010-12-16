@@ -9,11 +9,7 @@
 
 print("<ul class=\"guildnewsfeed\">\n");
 foreach($data as $y) {
-  print("<li>");
-  $x=explode("|",trim($y));
-  print($x[0] . " " . $x[1]);
-  $i++;
-  print("</li>\n");
+  print("<li>$y</li>\n");
 }
 print("</ul>\n");
 ?>
