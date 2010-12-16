@@ -7,7 +7,7 @@
         <license>GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html</license>
         <authorEmail>admin@soylentcode.com</authorEmail> 
         <authorUrl>soylentcode.com</authorUrl> 
-        <version>0.1.4</version> 
+        <version>0.1.6</version> 
         <description>Guild News Feed</description>
         <files>
                 <filename module="mod_guildnewsfeed">mod_guildnewsfeed.php</filename>
@@ -18,6 +18,7 @@
         </files>
         <params>
            <param name="realm" type="text" default="Whisperwind" label="Realm Name" description="Realm Name" />
+		   <param name="guild" type="text" default="Warped Welcome" label="Guild Name" description="Guild Name" />
            <param name="region" type="list" default="us" label="Region" description="Country Region">
              <option value="us">us</option>
              <option value="eu">eu</option>

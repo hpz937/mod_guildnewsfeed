@@ -11,7 +11,7 @@
 defined('_JEXEC') or die('Direct Access to this location is not allowed.');
 
 require_once( dirname(__FILE__).DS.'helper.php' );
-
+guildnewsfeed::setvars($params->get('realm'),$params->get('guild'),$params->get('updatetimer'),$params->get('displaycount'));
 $data = guildnewsfeed::getdata();
 require( JModuleHelper::getLayoutPath( 'mod_guildnewsfeed' ) );
 

@@ -12,6 +12,7 @@ defined('_JEXEC') or die('Direct Access to this location is not allowed.');
 class guildnewsfeed {
 
  //$params->get('realm'); //not setup yet
+ //$params->get('guild');
  //$params->get('region')
  //$params->get('updatetimer')
  //$params->get('displaycount') 
@@ -36,11 +37,17 @@ class guildnewsfeed {
     fclose($fp);
 	return $data;
   }
+  public function setvars($realm,$guild,$updatetime,$displaycount) {
+	guildnewsfeed::$feedurl="http://us.battle.net/wow/en/guild/" . rawurlencode(strtolower($realm)) . "/" . rawurlencode(strtolower($guild)) . "/news";
+	guildnewsfeed::$updatetime=$updatetime;
+    guildnewsfeed::$itemstodisplay=$displaycount;
+  }
 
   private function update_news() {
     if(file_exists(guildnewsfeed::$cachefile))
       if(time()-guildnewsfeed::$updatetime*60< filemtime(guildnewsfeed::$cachefile))
 	    return;
+	
     $fp=fopen(guildnewsfeed::$feedurl,"r");
 	$inul=0;
     $inli=0;
@@ -74,7 +81,7 @@ class guildnewsfeed {
   
   private function process($input) {
     preg_match("/<dt>([^<]*)<\/dt>/",$input,$dtmatch);
-    if(preg_match("/player-ach|item-crafted|item-looted/",$input)) {
+    if(preg_match("/player-ach|item-crafted|item-looted|item-purchased/",$input)) {
       preg_match("/<a href=\"([^\"]*)\"[^>]*>([^<]*)<\/a>([^<]*)<a href=\"([^\"]*)\"[^>]*>([^<]*)<\/a>/",$input,$matches);
       return "<a href=\"http://us.battle.net/" . $matches[1] . "\">" . htmlentities(utf8_decode($matches[2])) . "</a>" . $matches[3] . "<a href=\"http://us.battle.net/" . $matches[4] . "\">" . $matches[5] . "</a>. " . $dtmatch[1];
     }
